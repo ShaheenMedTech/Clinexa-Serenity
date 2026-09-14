@@ -1,0 +1,13 @@
+backups/
+previews/
+concepts/
+**/reference/
+*.cache
+__pycache__/
+*.pyc
+.env*
+*.log
+*.tmp
+*.bak
+*.tar.gz
+*.sha256

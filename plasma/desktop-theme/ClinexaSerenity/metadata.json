@@ -1,0 +1,17 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Clinexa Project"
+            }
+        ],
+        "Category": "",
+        "Description": "Clinexa Serenity desktop theme for KDE Plasma",
+        "EnabledByDefault": false,
+        "Id": "ClinexaSerenity",
+        "License": "GPL-3.0-or-later",
+        "Name": "Clinexa Serenity",
+        "Version": "0.3.0"
+    },
+    "X-Plasma-API": "5.0"
+}
