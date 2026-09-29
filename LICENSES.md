@@ -65,9 +65,16 @@ Their upstream copyright and SPDX license notices are retained.
 
 Clinexa-specific modifications do not replace or restrict the upstream license terms.
 
-### Clinexa-Specific Assets
+### Clinexa-Specific Generated Artwork
 
-Clinexa-specific artwork and other original files are covered by the repository-level MIT License unless a file or component carries a more specific license or third-party notice.
+The following project-specific generated artwork was created specifically for Clinexa Serenity:
+
+- `plasma/wallpapers/Clinexa-Serenity-v1.0.png`
+- `plasma/look-and-feel/ClinexaSerenity/contents/lockscreen/assets/background.png`
+
+These assets are distributed under the repository-level MIT License to the extent of the rights held by the project author, unless a separate notice states otherwise.
+
+They are not copied from third-party wallpaper collections.
 
 ## Third-Party Assets and Branding
 
