@@ -1,0 +1,18 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Id": "com.clinexa.serenity",
+        "Name": "Clinexa Serenity",
+        "Description": "Clinexa Serenity with custom Plasma lock screen",
+        "Version": "1.1.0",
+        "License": "GPL-2.0-or-later",
+        "Authors": [
+            {
+                "Name": "Shaheen Ahmed"
+            }
+        ]
+    },
+    "Keywords": "Desktop;Workspace;Appearance;Look and Feel;",
+    "X-Plasma-APIVersion": "2",
+    "X-Plasma-MainScript": "default"
+}
