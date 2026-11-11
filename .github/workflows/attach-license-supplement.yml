@@ -1,0 +1,49 @@
+name: Attach reviewed v1.0 license supplement
+on:
+  push:
+    branches: [release/v1.0-license-supplement]
+permissions:
+  contents: write
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: 06bf4b5298495e6b07a2b1cb90e0076797721445
+          path: work/clinexa
+      - name: Verify original archive and prepare supplement
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p outputs
+          gh release download v1.0 --pattern 'Clinexa-Serenity-v1.0-FINAL-publish.tar.gz' --dir work
+          echo '28ee7f0c0b69c3c795c48b9d31445c941a4347d0a1acf0681aa9afc3d3769a9a  work/Clinexa-Serenity-v1.0-FINAL-publish.tar.gz' | sha256sum -c -
+          cat > prepare.py <<'PYTHON'
+          import tarfile,io,hashlib
+          from pathlib import Path
+          src=next(Path('work').glob('Clinexa*.tar.gz'));dst=Path('outputs/Clinexa-Serenity-v1.0-license-review.tar.gz')
+          prefix='Clinexa-Serenity-v1.0/'
+          def add(out,path,data):
+           t=tarfile.TarInfo(prefix+path);t.size=len(data);t.mode=0o644;out.addfile(t,io.BytesIO(data))
+          with tarfile.open(src) as old,tarfile.open(dst,'w:gz',compresslevel=4) as out:
+           for t in old:
+            out.addfile(t,old.extractfile(t) if t.isfile() else None)
+           add(out,'LICENSES/GPL-3.0-or-later.txt',Path('work/clinexa/LICENSES/GPL-3.0-or-later.txt').read_bytes())
+           add(out,'LICENSES-PACKAGE.md',b'# License notices for the v1.0 package\n\nThe desktop theme in plasma/desktop-theme/ClinexaSerenity declares GPL-3.0-or-later in metadata.json. Its license text is included in LICENSES/GPL-3.0-or-later.txt. Preserve component-specific notices. The top-level LICENSE contains the MIT notice for original project material. This candidate supplements the original v1.0 distribution.\n')
+          with tarfile.open(src) as a,tarfile.open(dst) as b:
+           A={i.name:hashlib.sha256(a.extractfile(i).read()).digest() for i in a if i.isfile()}
+           B={i.name:hashlib.sha256(b.extractfile(i).read()).digest() for i in b if i.isfile()}
+           assert A.items()<=B.items();print('verified',len(A),'original files;',B.keys()-A.keys())
+          with dst.open('r+b') as f:
+           f.seek(4);f.write(bytes.fromhex('60cbf36a'))
+          dst.with_suffix('.gz.sha256').write_text(hashlib.file_digest(dst.open('rb'),'sha256').hexdigest()+'  '+dst.name+'\n')
+          PYTHON
+          docker run --rm -v "$PWD:/review" -w /review fedora:45 bash -ec 'dnf -qy install python3 && python3 prepare.py'
+          name=Clinexa-Serenity-v1.0-license-review.tar.gz
+          test "$(gzip -dc outputs/$name | sha256sum | cut -d' ' -f1)" = de1aab63f4df3f4cf36016751d016e541b6fa838e7a28501cb33a62dd59b2577
+          (cd outputs && sha256sum -c "$name.sha256")
+          gh release upload v1.0 "outputs/$name" "outputs/$name.sha256"
